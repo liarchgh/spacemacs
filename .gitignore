@@ -6,7 +6,9 @@
 /*.zip
 .DS_Store
 .ac-php-conf.json
-.cache
+.cache/*
+!.cache/quelpa
+.cache/quelpa/cache
 .dap-breakpoints
 .directory
 .emacs.desktop
@@ -41,7 +43,7 @@ crown/
 eclipse.jdt.ls
 edts/
 elnode/
-elpa/
+# elpa/
 EmmyLua-LS-all.jar
 eproject.lst
 eshell/alias
@@ -58,7 +60,7 @@ org-journal.cache
 projectile-bookmarks.eld
 projectile.cache
 python-*-docs-html
-quelpa/
+# quelpa/
 quickurls
 racket-mode/
 semanticdb/

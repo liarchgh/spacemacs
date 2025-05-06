@@ -109,6 +109,7 @@ Interactively prompt for Emojis and insert them in the current buffer.
 
 This respects the `emojify-emoji-styles' variable." t)
 (register-definition-prefixes "emojify" '("emojify-"))
+
 
 ;;; End of scraped data
 

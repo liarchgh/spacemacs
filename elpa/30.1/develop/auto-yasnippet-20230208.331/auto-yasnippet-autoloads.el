@@ -90,6 +90,7 @@ To save a snippet permanently, create an empty file and call this." t)
 (autoload 'aya-yank-snippet-from-history "auto-yasnippet" "\
 Insert snippet from history at point." t)
 (register-definition-prefixes "auto-yasnippet" '("aya-"))
+
 
 ;;; End of scraped data
 

@@ -68,6 +68,7 @@ Turn on `ace-pinyin-mode'." t)
 (autoload 'turn-off-ace-pinyin-mode "ace-pinyin" "\
 Turn off `ace-pinyin-mode'." t)
 (register-definition-prefixes "ace-pinyin" '("ace-pinyin-"))
+
 
 ;;; End of scraped data
 

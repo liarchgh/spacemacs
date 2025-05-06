@@ -12,6 +12,7 @@
 ;;; Generated autoloads from a.el
 
 (register-definition-prefixes "a" '("a-"))
+
 
 ;;; End of scraped data
 

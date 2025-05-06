@@ -149,6 +149,7 @@ Delete a local comment." t)
 ;;; Generated autoloads from code-review-utils.el
 
 (register-definition-prefixes "code-review-utils" '("code-review-"))
+
 
 ;;; End of scraped data
 

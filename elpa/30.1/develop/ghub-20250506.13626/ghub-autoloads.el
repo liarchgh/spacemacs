@@ -51,6 +51,7 @@ and call `auth-source-forget+'." t)
 ;;; Generated autoloads from gtea.el
 
 (register-definition-prefixes "gtea" '("gtea-default-host"))
+
 
 ;;; End of scraped data
 

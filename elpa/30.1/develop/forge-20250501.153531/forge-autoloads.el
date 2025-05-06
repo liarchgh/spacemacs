@@ -319,6 +319,7 @@ heavy development." t)
 (autoload 'forge-list-global-issues "forge-topics" nil t)
 (autoload 'forge-list-global-pullreqs "forge-topics" nil t)
 (register-definition-prefixes "forge-topics" '("forge-"))
+
 
 ;;; End of scraped data
 

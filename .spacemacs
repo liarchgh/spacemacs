@@ -58,6 +58,7 @@ This function should only modify configuration layer settings."
      chinese
      unicode-fonts
      eaf
+     python
      )
 
 
@@ -564,6 +565,10 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
         '(("melpa-cn" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
           ("org-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
           ("gnu-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
+  (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
+  (define-key evil-visual-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
+  (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
+  (define-key evil-visual-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
   )
 
 (defun dotspacemacs/user-config ()
@@ -589,37 +594,45 @@ This function is called at the very end of Spacemacs initialization."
    ;; If there is more than one, they won't work right.
    '(package-selected-packages
      '(ace-jump-helm-line ace-link add-node-modules-path aggressive-indent
-                          all-the-icons auto-compile auto-highlight-symbol
-                          centered-cursor-mode clean-aindent-mode
-                          column-enforce-mode company define-word devdocs diminish
-                          dired-quick-sort disable-mouse dotenv-mode drag-stuff
-                          dumb-jump elisp-def elisp-demos elisp-slime-nav
-                          emmet-mode emr eval-sexp-fu evil-anzu evil-args
-                          evil-cleverparens evil-collection evil-easymotion
-                          evil-escape evil-evilified-state evil-exchange
-                          evil-goggles evil-iedit-state evil-indent-plus evil-lion
+                          all-the-icons anaconda-mode auto-compile
+                          auto-highlight-symbol blacken bui centered-cursor-mode
+                          clean-aindent-mode code-cells column-enforce-mode
+                          company company-anaconda concurrent ctable cython-mode
+                          dap-mode define-word devdocs diminish dired-quick-sort
+                          disable-mouse dotenv-mode drag-stuff dumb-jump elisp-def
+                          elisp-demos elisp-slime-nav emmet-mode emr epc
+                          eval-sexp-fu evil-anzu evil-args evil-cleverparens
+                          evil-collection evil-easymotion evil-escape
+                          evil-evilified-state evil-exchange evil-goggles
+                          evil-iedit-state evil-indent-plus evil-lion
                           evil-lisp-state evil-matchit evil-mc evil-nerd-commenter
                           evil-numbers evil-surround evil-textobj-line evil-tutor
                           evil-unimpaired evil-visual-mark-mode evil-visualstar
-                          expand-region eyebrowse fancy-battery flycheck
+                          expand-region eyebrowse fancy-battery flycheck ggtags
                           golden-ratio google-translate grizzl helm-ag helm-comint
-                          helm-descbinds helm-make helm-mode-manager helm-org
-                          helm-projectile helm-purpose helm-swoop helm-themes
-                          helm-xref hide-comnt highlight-indentation
-                          highlight-numbers highlight-parentheses hl-todo
-                          holy-mode hungry-delete hybrid-mode import-js
-                          indent-guide info+ inspector link-hint lorem-ipsum
-                          macrostep multi-line nameless nerd-icons npm-mode
-                          open-junk-file org-superstar overseer paradox
-                          password-generator pcre2el popwin quickrun
-                          rainbow-delimiters restart-emacs space-doc spaceline
+                          helm-cscope helm-descbinds helm-make helm-mode-manager
+                          helm-org helm-projectile helm-purpose helm-pydoc
+                          helm-swoop helm-themes helm-xref hide-comnt
+                          highlight-indentation highlight-numbers
+                          highlight-parentheses hl-todo holy-mode hungry-delete
+                          hybrid-mode import-js importmagic indent-guide info+
+                          inspector json-mode json-navigator json-reformat
+                          json-snatcher link-hint live-py-mode load-env-vars
+                          lorem-ipsum lsp-docker lsp-pyright macrostep multi-line
+                          nameless nerd-icons nose npm-mode open-junk-file
+                          org-superstar overseer paradox password-generator
+                          pcre2el pip-requirements pipenv pippel poetry popwin
+                          py-isort pydoc pyenv-mode pylookup pytest pythonic
+                          pyvenv quickrun rainbow-delimiters reformatter
+                          restart-emacs ruff-format space-doc spaceline
                           spacemacs-purpose-popwin spacemacs-whitespace-cleanup
-                          string-edit-at-point string-inflection symbol-overlay
-                          symon term-cursor toc-org treemacs-evil
+                          sphinx-doc string-edit-at-point string-inflection
+                          symbol-overlay symon term-cursor toc-org treemacs-evil
                           treemacs-icons-dired treemacs-persp treemacs-projectile
                           typescript-mode undo-fu undo-fu-session uuidgen
-                          vi-tilde-fringe volatile-highlights vundo web-mode wgrep
-                          winum writeroom-mode ws-butler yasnippet)))
+                          vi-tilde-fringe volatile-highlights vundo web-beautify
+                          web-mode wgrep winum writeroom-mode ws-butler xcscope
+                          yapfify yasnippet)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.

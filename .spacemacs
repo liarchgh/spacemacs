@@ -577,6 +577,12 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  ;; https://github.com/syl20bnr/spacemacs/issues/11896
+  ;; https://github.com/syl20bnr/spacemacs/blob/c75bd204b1d9a6e2bb203ea6e2d845a6aa6dad8d/doc/DOCUMENTATION.org#the-vim-surround-case
+  (spacemacs|use-package-add-hook evil-surround
+    :post-config
+    (evil-define-key 'visual evil-surround-mode-map "s" 'evil-substitute)
+    (evil-define-key 'visual evil-surround-mode-map "S" 'evil-surround-region))
   )
 
 

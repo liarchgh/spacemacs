@@ -585,6 +585,11 @@ before packages are loaded."
   (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
   (define-key evil-visual-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
   (define-key evil-insert-state-map (kbd "C-v") 'spacemacs/evil-mc-paste-after)
+  (when (eq system-type 'windows-nt)
+    (setq locale-coding-system 'gb18030)  ;此句保证中文字体设置有效
+    (setq w32-unicode-filenames 'nil)       ; 确保file-name-coding-system变量的设置不会无效
+    (setq file-name-coding-system 'gb18030) ; 设置文件名的编码为gb18030
+    )
   )
 
 

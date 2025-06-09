@@ -590,6 +590,7 @@ before packages are loaded."
     (setq w32-unicode-filenames 'nil)       ; 确保file-name-coding-system变量的设置不会无效
     (setq file-name-coding-system 'gb18030) ; 设置文件名的编码为gb18030
     )
+  (defalias 'forward-evil-word 'forward-evil-symbol) ;evil以symbol为跳转单位，而不是默认的word
   )
 
 

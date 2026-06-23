@@ -38,12 +38,8 @@
     orderless
     persp-mode
     savehist
-    (selectrum :toggle (eq compleseus-engine 'selectrum))
-    (vertico
-     :toggle (eq compleseus-engine 'vertico)
-     :location elpa)
-    (vertico-posframe :toggle (and (eq compleseus-engine 'vertico)
-                                   compleseus-use-vertico-posframe))))
+    (vertico :location elpa)
+    (vertico-posframe :toggle compleseus-use-vertico-posframe)))
 
 (defun compleseus/pre-init-auto-highlight-symbol ()
   (spacemacs|use-package-add-hook auto-highlight-symbol
@@ -114,6 +110,8 @@
            ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
            ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
            ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ;; C-x p bindings (project-prefix-map)
+           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
            ;; Custom M-# bindings for fast register access
            ("M-#" . consult-register-load)
            ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
@@ -146,11 +144,6 @@
            ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
            ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
            ("M-s l" . consult-line))                 ;; needed by consult-line to detect isearch
-
-    ;; Enable automatic preview at point in the *Completions* buffer.
-    ;; This is relevant when you use the default completion UI,
-    ;; and not necessary for Selectrum, Vertico etc.
-    :hook (completion-list-mode . consult-preview-at-point-mode)
 
     ;; The :init configuration is always executed (Not lazy)
     :init
@@ -327,7 +320,6 @@
 
 (defun compleseus/init-embark-consult ()
   (use-package embark-consult
-    :ensure t
     :after (embark consult)
     :demand t ; only necessary if you have the hook below
     ;; if you want to have consult previews as you move around an
@@ -347,7 +339,19 @@
         (let ((completion-styles '(basic partial-completion orderless)))
           (apply orig-fun args))))
 
-    (setq orderless-component-separator "[ &]")
+    ;; The separator `&' is only useful for in-buffer completion with company,
+    ;; where a space cannot be used. Note that `&' conflicts with annotation
+    ;; matching (see `orderless-affix-dispatch-alist') in the minibuffer.
+    (define-advice company-capf (:around (orig-fun &rest args) spacemacs//set-orderless-component-separator)
+      (if (and (stringp company-prefix)
+               (> (length company-prefix) 0)
+               (eq (aref company-prefix 0) ?&))
+          ;; Strings that start with `&' should not trigger orderless. Most likely the
+          ;; user wants to type something like &optional or &rest, where orderless
+          ;; just incurs unnecessary typing delays.
+          (apply orig-fun args)
+        (let ((orderless-component-separator "&"))
+          (apply orig-fun args))))
 
     ;; should be all in with orderless otherwise the results are inconsistent.
     ;; the available styles are registered in `completion-styles-alist`.
@@ -355,27 +359,9 @@
           completion-category-defaults nil
           ;; we need to have 'basic here first in order to support tramp connections...
           ;; see `completion-styles`.
-          completion-category-overrides '((file (styles basic partial-completion))))))
-
-(defun compleseus/init-selectrum ()
-  (use-package selectrum
-    :init
-    ;; Disable ido. We want to use the regular find-file etc.; enhanced by selectrum
-    (setq ido-mode nil)
-
-    (selectrum-mode)
-    (spacemacs/set-leader-keys
-      "rl" 'selectrum-repeat
-      "sl" 'selectrum-repeat)
-
+          completion-category-overrides '((file (styles basic partial-completion))))
     :config
-    (when (spacemacs//support-hjkl-navigation-p)
-      (define-key selectrum-minibuffer-map (kbd "C-j") 'selectrum-next-candidate)
-      (define-key selectrum-minibuffer-map (kbd "C-r") 'consult-history)
-      (define-key selectrum-minibuffer-map (kbd "C-k") 'selectrum-previous-candidate)
-      (define-key selectrum-minibuffer-map (kbd "C-M-k") #'spacemacs/selectrum-previous-candidate-preview)
-      (define-key selectrum-minibuffer-map (kbd "C-M-j") #'spacemacs/selectrum-next-candidate-preview)
-      (define-key selectrum-minibuffer-map (kbd "C-SPC") #'spacemacs/embark-preview))))
+    (add-to-list 'orderless-style-dispatchers #'orderless-kwd-dispatch)))
 
 (defun compleseus/init-vertico ()
   (use-package vertico
@@ -430,11 +416,20 @@
     (when (spacemacs//support-hjkl-navigation-p)
       (define-key vertico-map (kbd "C-j") #'vertico-next)
       (define-key vertico-map (kbd "C-k") #'vertico-previous)
-      (define-key vertico-map (kbd "C-l") #'vertico-insert)
       (define-key vertico-map (kbd "C-S-j") #'vertico-next-group)
       (define-key vertico-map (kbd "C-S-k") #'vertico-previous-group)
       (define-key vertico-map (kbd "C-M-j") #'spacemacs/next-candidate-preview)
       (define-key vertico-map (kbd "C-M-k") #'spacemacs/previous-candidate-preview)
+      (with-eval-after-load 'vertico-reverse
+        (define-key vertico-reverse-map (kbd "C-j") #'vertico-previous)
+        (define-key vertico-reverse-map (kbd "C-k") #'vertico-next)
+        (define-key vertico-reverse-map (kbd "C-S-j") #'vertico-previous-group)
+        (define-key vertico-reverse-map (kbd "C-S-k") #'vertico-next-group)
+        (define-key vertico-reverse-map (kbd "C-M-j")
+                    #'spacemacs/previous-candidate-preview)
+        (define-key vertico-reverse-map (kbd "C-M-k")
+                    #'spacemacs/next-candidate-preview))
+      (define-key vertico-map (kbd "C-l") #'vertico-insert)
       (define-key vertico-map (kbd "M-RET") #'vertico-exit-input)
       (define-key vertico-map (kbd "C-SPC") #'spacemacs/embark-preview)
       (define-key vertico-map (kbd "C-r") #'consult-history)
@@ -442,7 +437,6 @@
 
   (use-package vertico-directory
     :after vertico
-    :ensure nil
     ;; More convenient directory navigation commands
     :init (bind-key "C-h" 'vertico-directory-up vertico-map
                     (spacemacs//support-hjkl-navigation-p))
@@ -451,14 +445,12 @@
 
   (use-package vertico-quick
     :after vertico
-    :ensure nil
     :init
     (define-key vertico-map "\M-q" #'vertico-quick-insert)
     (define-key vertico-map "\C-q" #'vertico-quick-exit))
 
   (use-package vertico-repeat
     :after vertico
-    :ensure nil
     :init
     (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
     (spacemacs/set-leader-keys

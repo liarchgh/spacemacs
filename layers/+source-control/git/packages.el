@@ -37,8 +37,6 @@
     git-messenger
     git-timemachine
     golden-ratio
-    (helm-git-grep :location (recipe :fetcher github :repo "yasuyk/helm-git-grep")
-                   :requires helm)
     magit
     (magit-delta :toggle git-enable-magit-delta-plugin)
     (magit-gitflow :toggle git-enable-magit-gitflow-plugin)
@@ -48,8 +46,7 @@
     org
     (orgit :requires org)
     (orgit-forge :requires (org forge))
-    smeargle
-    transient))
+    smeargle))
 
 
 (defun git/pre-init-golden-ratio ()
@@ -58,7 +55,7 @@
     (add-to-list 'golden-ratio-exclude-buffer-names " *transient*")))
 
 ;; evil-surround bindings interfere with line-wise staging
-(defun git/post-init-evil-surround ()
+(defun git/pre-init-evil-surround ()
   (spacemacs|use-package-add-hook magit
     :post-config
     (add-hook 'magit-mode-hook #'turn-off-evil-surround-mode)))
@@ -69,13 +66,6 @@
     ;; See `git-packages' form in this file.
     (unless (spacemacs/system-is-mswindows)
       (add-to-list 'spacemacs-evil-collection-allowed-list 'forge))))
-
-(defun git/init-helm-git-grep ()
-  (use-package helm-git-grep
-    :defer t
-    :init (spacemacs/set-leader-keys
-            "g/" 'helm-git-grep
-            "g*" 'helm-git-grep-at-point)))
 
 (defun git/init-code-review ()
   (use-package code-review
@@ -159,6 +149,7 @@
     ;; key bindings
     (spacemacs/declare-prefix "gf" "file")
     (spacemacs/set-leader-keys
+      "feg" '("Magit status in Spacemacs dir" . spacemacs/magit-status)
       "gb"  'spacemacs/git-blame-transient-state/body
       "gc"  'magit-clone
       "gfF" 'magit-find-file
@@ -211,10 +202,7 @@
     ;; bind function keys
     ;; (define-key magit-mode-map (kbd "<tab>") 'magit-section-toggle)
     (evilified-state-evilify-map magit-repolist-mode-map
-      :mode magit-repolist-mode
-      :bindings
-      (kbd "gr") 'magit-list-repositories
-      (kbd "RET") 'magit-repolist-status)
+      :mode magit-repolist-mode)
     ;; confirm/abort
     (when dotspacemacs-major-mode-leader-key
       (add-hook 'with-editor-mode-hook 'evil-normalize-keymaps)
@@ -291,8 +279,10 @@
 
 (defun git/init-magit-todos ()
   (use-package magit-todos
-    :hook (magit-mode . magit-todos-mode)
-    :config (spacemacs|diminish magit-todos-mode "TODOS")))
+    :after magit-status
+    :config
+    (spacemacs|diminish magit-todos-mode "TODOS")
+    (magit-todos-mode 1)))
 
 (defun git/init-orgit ()
   (use-package orgit
@@ -330,19 +320,6 @@
       "gHc" 'smeargle-clear
       "gHh" 'smeargle-commits
       "gHt" 'smeargle)))
-
-(defun git/pre-init-transient ()
-  (setq-default transient-history-file (expand-file-name "transient/history.el"
-                                                         spacemacs-cache-directory))
-  (setq-default transient-levels-file (expand-file-name "transient/levels.el"
-                                                        spacemacs-cache-directory))
-  ;; Values are the users saved preferences so they should persist.
-  (setq-default transient-values-file (expand-file-name "transient/values.el"
-                                                        dotspacemacs-directory)))
-
-(defun git/init-transient ()
-  (use-package transient
-    :defer t))
 
 (defun git/init-forge ()
   (use-package forge
